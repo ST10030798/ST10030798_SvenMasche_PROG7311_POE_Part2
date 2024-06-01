@@ -1,0 +1,109 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - poe</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/poe.styles.css" asp-append-version="true" />
+    <style>
+        .navbar-custom {
+            height: 80px; 
+        }
+        .navbar-custom .navbar-brand, .navbar-custom .nav-link {
+            font-size: 1.5rem; 
+        }
+        .login-icon {
+            width: 50px; 
+            height: 50px;
+        }
+        .login-text {
+            font-size: 1.2rem; 
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3 navbar-custom">
+            <div class="container-fluid">
+                <a class="navbar-brand" >Agri-Energy</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item">
+                            @if (SessionUser.Instance.CurrentUser != null)
+                            {
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Store">Store</a>
+                            }
+                            else
+                            {
+                                <span class="nav-link text-dark">Store</span>
+                            }
+                        </li>
+                    </ul>
+                    <ul class="navbar-nav">
+                        <li class="nav-item text-center">
+                           
+                            @if (SessionUser.Instance.CurrentUser != null)
+{
+                            @if(SessionUser.Instance.CurrentUser.Role == false)
+                            {
+                             <a class="nav-link" asp-area="" asp-controller="Home" asp-action="EmployeePage">
+   <img src="~/images/login-icon.png" class="login-icon" />
+</a>
+                            }
+                            else
+                            {
+                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Profile">
+   <img src="~/images/login-icon.png" class="login-icon" />
+</a>
+                            }
+    
+
+}
+else
+{
+    <a class="nav-link" asp-area="" asp-controller="Home" asp-action="LoginPage">
+         <img src="~/images/login-icon.png" class="login-icon" />
+    </a>
+}
+                             @if (SessionUser.Instance.CurrentUser != null)
+ {
+     <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Logout">
+        <div class="login-text">Logout</div>
+     </a>
+ 
+ }
+ else
+ {
+     <a class="nav-link" asp-area="" asp-controller="Home" asp-action="LoginPage">
+         <div class="login-text">Login</div>
+     </a>
+ }
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2024 - Agri-Energy
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

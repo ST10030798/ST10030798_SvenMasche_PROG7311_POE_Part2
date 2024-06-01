@@ -1,0 +1,72 @@
+﻿@model poe.Models.ProfileModel
+
+@{
+  ViewData["Title"] = "Profile";
+  var Farmer = Model.Farmer;
+}
+ <style>
+   .scrollable-container {
+     max-height: 80vh; 
+     overflow-y: auto;
+     overflow-x: hidden;
+   }
+
+   .error-label {
+ color: red;
+ font-weight: bold;
+     margin-bottom: 10px; 
+   }
+ </style>
+
+<div class="container profile-container">
+  <div class="row">
+    <div class="col-md-4">
+      <div class="profile-header">
+        <img src="path-to-profile-image.jpg" alt="Profile Image" class="profile-image" />
+        <div class="user-info">
+          <div class="name">Name: @Farmer.FullName</div>
+          <div class="username">Username: @Farmer.userName</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-8">
+      <div class="product-panel">
+        <h3>Create Product Listing</h3>
+        <form method="post" action="/Home/Profile" enctype="multipart/form-data">
+          <div class="form-group">
+            <label for="productName">Product Name:</label>
+            <input type="text" id="productName" name="ProductName" class="form-control" placeholder="Enter product name" required />
+          </div>
+          <div class="form-group">
+            <label for="productDescription">Product Description:</label>
+            <textarea id="productDescription" name="ProductDescription" class="form-control" rows="3" placeholder="Enter product description" required></textarea>
+          </div>
+          <div class="form-group">
+  <label for="productPrice">Price:</label>
+  <input type="number" id="productPrice" name="ProductPrice" class="form-control" placeholder="Enter product price" required step="0.01" />
+</div>
+          <div class="form-group">
+            <label for="productImage">Product Image:</label>
+            <input type="file" id="productImage" name="ProductImage" class="form-control-file" required />
+            <div id="productImageError" class="error-label"></div>
+          </div>
+          <div class="form-group">
+            <label for="selectedType">Product Type:</label>
+            <select id="selectedType" name="SelectedType" class="form-control" required>
+              <option value="">Select type</option>
+              <option value="vehicle">Vehicle</option>
+              <option value="liveStock">Live Stock</option>
+              <option value="crops">Crops</option>
+              <option value="equipment">Equipment</option>
+            </select>
+          </div>
+          <button type="submit" class="btn btn-primary">Create Product</button>
+        </form>
+               @if (Model.error)
+{
+  <div class="error-label" id="errorMessage">@Model.errorMessage</div>
+}
+      </div>
+    </div>
+  </div>
+</div>

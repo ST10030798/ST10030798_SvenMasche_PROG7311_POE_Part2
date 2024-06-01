@@ -1,0 +1,123 @@
+﻿@model poe.Models.StoreModel
+
+@{
+  ViewData["Title"] = "Store";
+  bool isAdmin = SessionUser.Instance.CurrentUser?.Role == true; // Assuming "true" represents admin role
+  string storeLabel = isAdmin ? "Your Products" : "Store";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>@ViewData["Title"] - poe</title>
+  <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+  <style>
+    .scrollable-container {
+      max-height: 80vh; 
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+
+    .error-label {
+  color: red;
+  font-weight: bold;
+      margin-bottom: 10px; 
+    }
+  </style>
+</head>
+<body>
+  <header class="@(isAdmin ? "d-none" : "")">
+    <nav class="navbar navbar-expand-sm navbar-light bg-light border-bottom box-shadow mb-3">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="#">Store</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item d-flex align-items-center">
+              <span class="me-2">Search Farmer:</span>
+              <input type="text" id="searchInput" class="form-control form-control-sm" placeholder="Enter username" />
+              <button class="btn btn-primary btn-sm ms-2" id="filterButton">Filter</button>
+            </li>
+       <li class="nav-item d-flex align-items-center ms-3">
+  <input type="radio" id="dateFilterRadio" name="filter" value="dateFilter" class="me-2">
+  <label for="dateFilterRadio" class="me-2">Date Filter:</label>
+  <input type="date" id="startDate" class="form-control form-control-sm me-2" onkeydown="return false;" value="@DateTime.Now.ToString("yyyy-MM-dd")">
+  <input type="date" id="endDate" class="form-control form-control-sm" onkeydown="return false;" value="@DateTime.Now.ToString("yyyy-MM-dd")">
+</li>
+
+
+            <li class="nav-item d-flex align-items-center ms-3">
+              <input type="radio" id="typeFilterRadio" name="filter" value="typeFilter" class="me-2">
+              <label for="typeFilterRadio" class="me-2">Type Filter:</label>
+              <select id="typeFilter" class="form-control form-control-sm">
+                <option value="">Select type</option>
+                <option value="vehicle">Vehicle</option>
+                <option value="liveStock">Live Stock</option>
+                <option value="crops">Crops</option>
+                <option value="equipment">Equipment</option>
+                </select>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+       @if (@Model.error)
+{
+  <div class="error-label" id="errorMessage">@Model.errorMessage</div>
+}
+ </header>
+    <div class="container scrollable-container">
+        <h1 class="display-4 text-center">@storeLabel</h1>
+        <div class="row" id="product-list">
+            @foreach (var product in Model.Products) {
+                <div class="col-md-4">
+                    <div class="card mb-4 shadow-sm">
+                        <img class="card-img-top" src="data:image/jpeg;base64,@Convert.ToBase64String(product.image)" alt="Item Image">
+                        <div class="card-body">
+                            <h5 class="card-title">@product.Name</h5>
+                            <p class="card-text">Price: @product.Price</p>
+                            <p class="card-text">Description: @product.Description</p>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script>
+        $(document).ready(function () {
+            $("#filterButton").click(function () {
+                
+                var searchTerm = $("#searchInput").val();
+                var dateFilterRadio = $("#dateFilterRadio").is(":checked");
+                var typeFilterRadio = $("#typeFilterRadio").is(":checked");
+                var startDate = $("#startDate").val();
+                var endDate = $("#endDate").val();
+                var typeFilter = $("#typeFilter").val();
+
+                var form = $('<form></form>');
+                form.attr('method', 'post'); 
+                form.attr('action', '/Home/Store'); 
+             
+                form.append($('<input type="hidden" name="searchTerm" value="' + searchTerm + '" />'));
+                form.append($('<input type="hidden" name="dateFilterRadio" value="' + dateFilterRadio + '" />'));
+                form.append($('<input type="hidden" name="startDate" value="' + startDate + '" />'));
+                form.append($('<input type="hidden" name="endDate" value="' + endDate + '" />'));
+                form.append($('<input type="hidden" name="typeFilterRadio" value="' + typeFilterRadio + '" />'));
+                form.append($('<input type="hidden" name="typeFilter" value="' + typeFilter + '" />'));
+              
+                $('body').append(form);
+                form.submit();
+            });
+        });
+    </script>
+</body>
+</html>
